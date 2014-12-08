@@ -201,8 +201,8 @@ class Game:
 
     def reset_stones(self):
         for stone in self.stones:
-            stone.rect.x = self.player.rect.x + random.randint(-5, 200)
-            stone.rect.y = self.player.rect.bottom + random.randint(10, 75)
+            stone.rect.x = self.player.rect.x + random.randint(250, 300)
+            stone.rect.y = self.player.rect.bottom + random.randint(70, 85)
             stone.vspeed = -1
             stone.hspeed = -1
             stone.dist = 0
