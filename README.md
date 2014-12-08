@@ -1,9 +1,8 @@
-g is an opossum that loves to make games. He doesn't have much (see: opossum) so he uses the things he finds while going on his daily walks to make his games. 
+Lycklig is an opossum that loves to make games. He doesn't have much (see: opossum) so he uses the things he finds while going on his daily walks to make his games. 
 
 The goal of Stone Toss is to toss stones as close to the bucket as possible. You receive scores for your closest stone and for the total distance of all stones thrown. There is no prize (since Lycklig is the only one who plays the game), and thus the game is played purely for fun. Enjoy.
 
----
-#credits:#
+__credits:__
 - coding:
     - language: python
     - libraries: pygame
