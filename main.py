@@ -155,6 +155,9 @@ class Game:
         # background
         self.bg = pygame.image.load(os.path.join('graphics', 'bg.png'))
 
+        # title
+        self.title = pygame.image.load(os.path.join('graphics', 'lyckligsstonetoss.png'))
+
         # player
         self.player = Opossum(10, 250)
 
@@ -167,13 +170,13 @@ class Game:
         self.bucket = Bucket()
 
         # score
-        self.score_closest = -1
+        self.score_closest = 'n/a'
         self.score_total = -1
 
         # font
         pygame.font.init()
         self.font_size = 14
-        self.font = pygame.font.Font('DJB This Is My Life.ttf', self.font_size)
+        self.font = pygame.font.Font('Biko_Regular.otf', self.font_size)
 
         # audio
         pygame.mixer.init()
@@ -183,12 +186,12 @@ class Game:
         self.sfx_hit = pygame.mixer.Sound(os.path.join('audio', 'hit.ogg'))
         self.sfx_hit.set_volume(0.6)
         self.sfx_throw = pygame.mixer.Sound(os.path.join('audio', 'throw2.ogg'))
-        #self.sfx_throw.set_volume(0.8)
+        self.sfx_throw.set_volume(0.3)
 
 
     def reset(self):
         # reset scores
-        self.score_closest = -1
+        self.score_closest = 'n/a'
         self.score_total = -1
         # reset stones
         self.throws = 5
@@ -205,7 +208,7 @@ class Game:
             stone.dist = 0
             stone.held = False
             stone.thrown = False
-            self.scored = False
+            stone.scored = False
 
         self.stones[self.throws-1].held = True
 
@@ -231,6 +234,10 @@ class Game:
     def draw(self):
         # draw bg
         self.screen.blit(self.bg, (0,0))
+
+        # draw title 
+        self.screen.blit(self.title, (20, 20))
+
         # draw player & arm
         self.screen.blit(self.player.image, self.player.rect)
         self.player.draw_arm(self.screen)
@@ -243,15 +250,15 @@ class Game:
             self.screen.blit(stone.image, stone.rect)
 
         # draw UI
-        text_info = self.font.render('space: throw,   esc: quit,   r: restart', 0, (50, 50, 50))
-        if self.score_closest == -1:
-            text_closest = self.font.render('closest: ', 0, (50, 50, 50))
+        text_info = self.font.render('space: throw,   esc: quit,   r: restart', 1, (50, 50, 50))
+        if self.score_closest == 'n/a':
+            text_closest = self.font.render('closest: n/a', 1, (50, 50, 50))
         else:
-            text_closest = self.font.render('closest: {}'.format(self.score_closest), 0, (50, 50, 50))
-        text_total = self.font.render('total: {}'.format(self.score_total), 0, (50, 50, 50))
-        self.screen.blit(text_info, (500, 20))
-        self.screen.blit(text_closest, (500, 60))
-        self.screen.blit(text_total, (500, 80))
+            text_closest = self.font.render('closest: {}'.format(self.score_closest), 1, (50, 50, 50))
+        text_total = self.font.render('total: {}'.format(self.score_total), 1, (50, 50, 50))
+        self.screen.blit(text_info, (25, 125))
+        self.screen.blit(text_closest, (25, 140))
+        self.screen.blit(text_total, (25, 155))
 
         # update display
         pygame.display.update()
@@ -274,14 +281,16 @@ class Game:
 
             self.player.update(dt, self.throws)
             
-            self.score_total = 0
-            self.score_closest = -1
+            self.score_total = sum([stone.dist for stone in self.stones])
+            
+            #print([stone.scored for stone in self.stones])
 
             for stone in self.stones:
                 stone.update(dt, self.ground, self.bucket, self, self.player)
-                if stone.thrown == True:
-                    self.score_total += stone.dist
-                    if stone.dist < self.score_closest or self.score_closest == -1 and (stone.rect.bottom == self.ground or self.scored):
+                if stone.scored:
+                    self.score_closest = 'inside!'
+                if stone.dist != 0 and self.score_closest != 'inside!':
+                    if (stone.dist < self.score_closest or self.score_closest == 'n/a'):
                         self.score_closest = stone.dist
             #print('closest\t{}\ntotal\t{}'.format(self.score_closest,self.score_total))
 
